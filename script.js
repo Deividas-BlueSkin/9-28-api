@@ -62,8 +62,10 @@ function init() {
         button.addEventListener('click', function () {
             console.log(select.value)
             fetch(`https://api.chucknorris.io/jokes/random?category=${select.value}`).then(res => res.json()).then(joke => {
-                create('p',jokeContainer,null,null,true).textContent = joke.value
+                create('p', jokeContainer, null, null, true).textContent = joke.value
             })
+        })
+
         // let submit = create('input', form)
         // submit.type = 'submit'
         // submit.value = 'Get'
@@ -73,7 +75,6 @@ function init() {
         //         create('p').textContent = joke.value
         //     })
 
-        })
     })
 }
 
