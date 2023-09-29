@@ -42,41 +42,84 @@ function create(HTMLelement, parent, classes, id, first) {
 // let optionArray = []
 init()
 function init() {
+
+    let container = create('div', null, null, null, true)
+    let form = create('form', container, null, null, true)
+    let select = create('select', form)
+
+    let submit = create('input', form)
+    submit.type = 'submit'
+    submit.value = 'Get'
+    let jokeContainer = create('div', container)
+    let fetched = false
+
+    submit.addEventListener('click', function (event) {
+        event.preventDefault();
+        if (fetched) {
+            fetch(`https://api.chucknorris.io/jokes/random?category=${select.value}`).then(res => res.json()).then(joke => {
+                create('p', jokeContainer, null, null, true).textContent = joke.value
+            })
+        }
+    })
+
     fetch('https://api.chucknorris.io/jokes/categories').then(res => res.json()).then(categories => {
-        // optionArray = categories
-        // console.log(optionArray)
 
-        //do everything here
-
-        let container = create('div', null, null, null, true)
-        let select = create('select', container)
         categories.forEach(function (item) {
             let option = create('option', select)
             option.textContent = item
             option.value = item
         })
-        let button = create('button', container)
-        button.textContent = 'Get'
-        button.value = 'get'
-        let jokeContainer = create('div', container)
-        button.addEventListener('click', function () {
-            console.log(select.value)
-            fetch(`https://api.chucknorris.io/jokes/random?category=${select.value}`).then(res => res.json()).then(joke => {
-                create('p', jokeContainer, null, null, true).textContent = joke.value
-            })
-        })
-
-        // let submit = create('input', form)
-        // submit.type = 'submit'
-        // submit.value = 'Get'
-        // submit.addEventListener('click', function () {
-        //     console.log(select.value)
-        //     fetch(`https://api.chucknorris.io/jokes/random?category=${select.value}`).then(res => res.json()).then(joke => {
-        //         create('p').textContent = joke.value
-        //     })
-
+        fetched = true
     })
+
+    // [<=-=-=-=-=-=-=-=-=-=-=-=>][<=-=-=-=-=-=-=-=-=-=-=-=>][<
+    // search
+    // [<=-=-=-=-=-=-=-=-=-=-=-=>][<=-=-=-=-=-=-=-=-=-=-=-=>][<
+
+    // let searchLabel = create('label',form)
+    // searchLabel.textContent = ' Search: '
+    // let search = create('input', form)
+    // search.type = 'search'
+    // // submit.value = 'Get'
+    // search.addEventListener('search', function (event) {
+    //     event.preventDefault();
+    //     console.log(search.value)
+    //     fetch(`https://api.chucknorris.io/jokes/search?query=${search.value}`).then(res => res.json()).then(joke => {
+    //         let index = Math.floor(Math.random() * joke.count)
+    //         console.log(joke.length)
+    //         console.log(index)
+    //         // create('p', jokeContainer, null, null, true).textContent = joke[index].value
+    //     })
+    // })
 }
+
+
+function getJokeByPhrase() {
+    const searchForm = create('form')
+  
+    searchForm.addEventListener('submit', event => {
+      event.preventDefault()
+  
+      const searchPhrase = event.target['search-input'].value
+      const searchUrl = `https://api.chucknorris.io/jokes/search?query=${searchPhrase}`
+  
+      fetch(searchUrl)
+        .then(res => res.json())
+        .then(data => {
+          const total = data.total
+          const jokeParagraph = document.querySelector('#joke-paragraph')
+  
+          if (total > 0) {
+            const index = Math.floor(Math.random() * total)
+            const selectedJoke = data.result[index].value
+  
+            jokeParagraph.textContent = selectedJoke
+          } else {
+            jokeParagraph.textContent = 'No joke found :('
+          }
+        })
+    })
+  }
 
 // function doAll(options) {
 
